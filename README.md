@@ -6,11 +6,11 @@
 
 
 
-This repository contains a synthesizable, parameterized \*\*AMBA AXI4-Lite RAM Slave\*\* implementation together with a complete verification environment built using \*\*Python\*\*, \*\*Cocotb\*\*, and \*\*PyVSC (Python Verification Stimulus and Coverage)\*\*.
+This repository contains a synthesizable, parameterized \*\*AMBA AXI4-Lite RAM Slave\*\* together with a complete verification environment built using \*\*Python\*\*, \*\*Cocotb\*\*, and \*\*PyVSC (Python Verification Stimulus and Coverage)\*\*.
 
 
 
-The verification environment applies \*\*Constrained Random Verification (CRV)\*\* to thoroughly validate the AXI4-Lite protocol, stressing handshake timing, address alignment, and memory transactions under randomized operating conditions.
+The verification environment applies \*\*Constrained Random Verification (CRV)\*\* to validate the AXI4-Lite protocol by stressing handshake timing, address alignment, and memory transactions under randomized operating conditions.
 
 
 
@@ -26,13 +26,13 @@ The design implements a fully compliant \*\*AMBA AXI4-Lite Memory Slave\*\* feat
 
 
 
-\* 32-bit data bus
+\- 32-bit data bus
 
-\* 8-bit address space
+\- 8-bit address space
 
-\* Single outstanding transactions
+\- Single outstanding transactions
 
-\* Fully synthesizable RTL implementation
+\- Fully synthesizable RTL implementation
 
 
 
@@ -40,23 +40,23 @@ The design implements a fully compliant \*\*AMBA AXI4-Lite Memory Slave\*\* feat
 
 
 
-The design operates through the five standard AXI4-Lite channels, each using the `VALID`/`READY` handshake protocol.
+The design operates through the five standard AXI4-Lite channels, each using the `VALID` / `READY` handshake protocol.
 
 
 
-| Channel                | Description                                     |
+| Channel | Description |
 
-| ---------------------- | ----------------------------------------------- |
+|----------|-------------|
 
-| \*\*Write Address (AW)\*\* | Receives target write addresses from the master |
+| \*\*Write Address (AW)\*\* | Receives write addresses from the master |
 
-| \*\*Write Data (W)\*\*     | Accepts 32-bit write data                       |
+| \*\*Write Data (W)\*\* | Accepts 32-bit write data |
 
-| \*\*Write Response (B)\*\* | Returns transaction status (`2'b00` = \*\*OKAY\*\*) |
+| \*\*Write Response (B)\*\* | Returns transaction status (`2'b00 = OKAY`) |
 
-| \*\*Read Address (AR)\*\*  | Receives target read addresses                  |
+| \*\*Read Address (AR)\*\* | Receives read addresses from the master |
 
-| \*\*Read Data (R)\*\*      | Returns requested data to the master            |
+| \*\*Read Data (R)\*\* | Returns requested data to the master |
 
 
 
@@ -68,19 +68,19 @@ The design operates through the five standard AXI4-Lite channels, each using the
 
 
 
-The verification environment is implemented using:
+The verification environment is built using:
 
 
 
-\* Python
+\- Python
 
-\* Cocotb
+\- Cocotb
 
-\* PyVSC
+\- PyVSC
 
 
 
-Instead of relying on directed test vectors, the testbench employs \*\*Constrained Random Verification (CRV)\*\* to maximize protocol coverage.
+Instead of directed test vectors, the testbench employs \*\*Constrained Random Verification (CRV)\*\* to maximize protocol coverage.
 
 
 
@@ -88,17 +88,21 @@ Instead of relying on directed test vectors, the testbench employs \*\*Constrain
 
 
 
-A reusable Python Bus Functional Model (`Axi4LiteMaster`) abstracts low-level AXI signal manipulation into high-level asynchronous API calls:
+A reusable Python \*\*Bus Functional Model (BFM)\*\* (`Axi4LiteMaster`) abstracts low-level AXI signal manipulation into simple asynchronous API calls.
 
 
 
-\* `write\_bus()`
-
-\* `read\_bus()`
+Available APIs:
 
 
 
-This enables concise and reusable transaction generation while maintaining protocol compliance.
+\- `write\_bus()`
+
+\- `read\_bus()`
+
+
+
+This allows high-level transaction generation while maintaining full AXI4-Lite protocol compliance.
 
 
 
@@ -138,7 +142,7 @@ address % 4 == 0
 
 
 
-Randomized addresses are automatically limited to the valid RAM address space, preventing transactions outside the allocated memory region.
+Randomized addresses are automatically restricted to the valid RAM address range, preventing out-of-bound memory accesses.
 
 
 
@@ -158,7 +162,7 @@ Randomized addresses are automatically limited to the valid RAM address space, p
 
 
 
-Early simulation runs exhibited intermittent read failures caused by the RAM's combinational output path:
+Early simulation runs exhibited intermittent read failures caused by the RAM's combinational output path.
 
 
 
@@ -170,7 +174,7 @@ assign rdata = memory\[araddr];
 
 
 
-Since the memory output changed immediately after the rising clock edge, the Python monitor occasionally sampled the updated value due to delta-cycle scheduling.
+Since the memory output changes immediately after the rising clock edge, the Python monitor occasionally sampled the updated value because of simulator delta-cycle scheduling.
 
 
 
@@ -178,7 +182,7 @@ Since the memory output changed immediately after the rising clock edge, the Pyt
 
 
 
-The monitoring VIP was redesigned to sample bus signals during the \*\*FallingEdge\*\* (setup window), ensuring all read data was stable before protocol validation.
+The monitoring VIP was redesigned to sample the bus during the \*\*FallingEdge\*\* (setup window), ensuring that read data is fully stable before protocol validation.
 
 
 
@@ -202,17 +206,13 @@ Install the following tools:
 
 
 
-\* Python 3
+\- Python 3
 
-\* Icarus Verilog (`iverilog`)
+\- Icarus Verilog (`iverilog`)
 
-\* Cocotb
+\- Cocotb
 
-\* PyVSC
-
-
-
-\---
+\- PyVSC
 
 
 
@@ -230,11 +230,7 @@ cd axi4-lite-ram-vip
 
 
 
-\---
-
-
-
-\### Install Python Dependencies
+\### Install Dependencies
 
 
 
@@ -243,10 +239,6 @@ cd axi4-lite-ram-vip
 pip install cocotb pyvsc
 
 ```
-
-
-
-\---
 
 
 
@@ -300,7 +292,7 @@ axi4-lite-ram-vip/
 
 ├── docs/
 
-│   ├── axi4\_lite\_terminal\_PASS.png
+│   ├── axi4\_lite\_terminal\_pass.png
 
 │   └── axi4\_lite\_waveform.png
 
@@ -316,6 +308,50 @@ axi4-lite-ram-vip/
 
 
 
+\## ✅ Verification Results
+
+
+
+The verification environment validates:
+
+
+
+\- AXI4-Lite `VALID/READY` handshake compliance
+
+\- Correct write transactions
+
+\- Correct read transactions
+
+\- Address alignment constraints
+
+\- Memory boundary protection
+
+\- Constrained-random stimulus generation
+
+\- Stable protocol behavior across multiple simulation runs
+
+
+
+\### Terminal Output
+
+
+
+!\[Terminal Output](docs/axi4\_lite\_terminal\_pass.png)
+
+
+
+\### Waveform
+
+
+
+!\[Waveform](docs/axi4\_lite\_waveform.png)
+
+
+
+\---
+
+
+
 \## 🎯 Learning Objectives
 
 
@@ -324,23 +360,23 @@ This project demonstrates practical implementation of:
 
 
 
-\* AMBA AXI4-Lite Protocol
+\- AMBA AXI4-Lite Protocol
 
-\* Memory-Mapped Peripheral Design
+\- Memory-Mapped Peripheral Design
 
-\* Cocotb-based Verification
+\- Cocotb-based Verification
 
-\* Python Bus Functional Models (BFMs)
+\- Python Bus Functional Models (BFMs)
 
-\* Constrained Random Verification (CRV)
+\- Constrained Random Verification (CRV)
 
-\* PyVSC Constraint Solving
+\- PyVSC Constraint Solving
 
-\* Protocol Handshake Verification
+\- Protocol Handshake Verification
 
-\* Transaction-Level Verification
+\- Transaction-Level Verification
 
-\* Verification Debugging and Delta-Cycle Analysis
+\- Verification Debugging and Delta-Cycle Analysis
 
 
 
@@ -353,40 +389,6 @@ This project demonstrates practical implementation of:
 
 
 This project is intended for educational and learning purposes.
-
-
-
-\---
-
-
-
-\## ✅ Verification Results
-
-
-
-The verification environment validates:
-
-
-
-\* AXI4-Lite `VALID/READY` handshake compliance
-
-\* Correct write transactions
-
-\* Correct read transactions
-
-\* Address alignment requirements
-
-\* Memory boundary protection
-
-\* Randomized transaction sequences
-
-\* Stable protocol behavior across multiple constrained-random test iterations
-
-
-
-!\[Terminal Pass](docs/axi4\_lite%20terminal%20PASS.png)
-
-!\[Terminal Pass](docs/axi4\_lite%20waveform.png)
 
 
 

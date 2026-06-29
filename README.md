@@ -300,9 +300,9 @@ axi4-lite-ram-vip/
 
 ├── docs/
 
-│   ├── axi4\_lite terminal PASS.png
+│   ├── axi4\_lite\_terminal\_PASS.png
 
-│   └── axi4\_lite waveform.png
+│   └── axi4\_lite\_waveform.png
 
 │
 
